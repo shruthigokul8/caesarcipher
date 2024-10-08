@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Caesar Cipher</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Caesar Cipher Encoder/Decoder</h1>
+        <form id="cipher-form">
+            <label for="operation">Operation:</label>
+            <select id="operation">
+                <option value="encode">Encode</option>
+                <option value="decode">Decode</option>
+            </select>
+
+            <label for="text">Text:</label>
+            <textarea id="text" placeholder="Enter your text here"></textarea>
+
+            <label for="shift">Shift Value:</label>
+            <input type="number" id="shift" value="3">
+
+            <label for="mod">Modulus Value:</label>
+            <input type="number" id="mod" value="26">
+
+            <label for="alphabet">Alphabet:</label>
+            <input type="text" id="alphabet" value="abcdefghijklmnopqrstuvwxyz">
+
+            <label for="foreign-chars">Remove Foreign Characters?</label>
+            <select id="foreign-chars">
+                <option value="0">No</option>
+                <option value="1">Yes</option>
+            </select>
+
+            <label for="letter-case">Letter Case:</label>
+            <select id="letter-case">
+                <option value="1">Keep as is</option>
+                <option value="2">Lowercase</option>
+                <option value="3">Uppercase</option>
+            </select>
+
+            <button type="submit">Submit</button>
+        </form>
+
+        <h2>Result:</h2>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        document.getElementById('cipher-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const text = document.getElementById('text').value;
+            const operation = document.getElementById('operation').value;
+            const shift = document.getElementById('shift').value;
+            const mod = document.getElementById('mod').value;
+            const alphabet = document.getElementById('alphabet').value;
+            const foreign_chars = document.getElementById('foreign-chars').value;
+            const letter_case = document.getElementById('letter-case').value;
+
+            fetch('/cipher', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    text: text,
+                    operation: operation,
+                    shift: shift,
+                    mod: mod,
+                    alphabet: alphabet,
+                    foreign_chars: foreign_chars,
+                    letter_case: letter_case,
+                }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('result').textContent = data.result;
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        });
+    </script>
+</body>
+</html>
